@@ -1,7 +1,9 @@
 ﻿import * as transform from './transform';
+import { DOMParser as dom } from 'xmldom';
 import { drawSvgLines } from './svgLines';
 import { initTooltip } from './tooltip';
 import { hasClass, findAncestor } from './utils';
+import { RelOp, ShowPlan } from './showplan';
 
 declare function require(path: string) : any;
 let qpXslt = require('raw-loader!./qp.xslt');
@@ -50,22 +52,12 @@ function getNodeXml(node: HTMLElement) {
     }
     let statementId = findStatementId(node);
     let nodeId = node.dataset["nodeId"];
-    let planXml = getPlanXml(container);
-    let nodeXml = planXml.evaluate(
-        `//showplan:*[@StatementId='${statementId}']//showplan:RelOp[@NodeId='${nodeId}']`,
-        planXml, <any>nsResolver, XPathResult.ANY_TYPE, null).iterateNext();
+    let relOp = new ShowPlan(getPlanXml(container)).getNode(statementId, nodeId);
     return {
         nodeId,
         statementId,
-        nodeXml
+        relOp
     }
-}
-
-function nsResolver(prefix) {
-    var ns = {
-      'showplan' : 'http://schemas.microsoft.com/sqlserver/2004/07/showplan'
-    };
-    return ns[prefix] || null;
 }
 
 function setDefaults(options: Options, defaults: Options) {
@@ -87,6 +79,5 @@ export {
     drawSvgLines as drawLines,
     showPlan,
     getPlanXml,
-    getNodeXml,
-    nsResolver
+    getNodeXml
 }
