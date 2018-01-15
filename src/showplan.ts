@@ -18,6 +18,7 @@ export class RelOp {
 
     label(): string {
         if (this.evaluate("boolean(s:IndexScan/@Storage='ColumnStore')").booleanValue) return "Columnstore Index Scan";
+        if (this.evaluate("s:IndexScan/s:Object/@IndexKind='Clustered'").booleanValue) return "Key Lookup";
         return this.xml.attributes["PhysicalOp"].value;
     }
 }
