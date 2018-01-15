@@ -1,15 +1,22 @@
 import * as showplan from "./showplan";
 
-export function tooltipHeader(node: showplan.RelOp) {
+function tooltipHeader(node: showplan.RelOp) {
     let div = document.createElement('div');
-    div.classList.add('qp-tt-header');
+    div.className += ' qp-tt-header';
     div.textContent = node.label();
+    return div;
+}
+
+function description(node: showplan.RelOp) {
+    let div = document.createElement('div');
+    div.textContent = node.description();
     return div;
 }
 
 export function tooltip(node: showplan.RelOp) {
     let div = document.createElement("div");
-    div.classList.add('qp-tt');
+    div.className += ' qp-tt';
     div.appendChild(tooltipHeader(node));
+    div.appendChild(description(node));
     return div;
 }

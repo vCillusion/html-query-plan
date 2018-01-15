@@ -12,7 +12,7 @@ nsResolver["lookupNamespaceURI"] = nsResolver;
 export class RelOp {
     constructor(public xml: Element) {}
     
-    evaluate(expression: string): XPathResult {
+    private evaluate(expression: string): XPathResult {
         return xpath.evaluate(expression, this.xml, <any>nsResolver, 0 /* XPathResult.ANY_TYPE */, null);
     }
 
@@ -20,6 +20,10 @@ export class RelOp {
         if (this.evaluate("boolean(s:IndexScan/@Storage='ColumnStore')").booleanValue) return "Columnstore Index Scan";
         if (this.evaluate("s:IndexScan/s:Object/@IndexKind='Clustered'").booleanValue) return "Key Lookup";
         return this.xml.attributes["PhysicalOp"].value;
+    }
+
+    description(): string {
+        return "Scanning a clustered index, entirely or only a range.";
     }
 }
 

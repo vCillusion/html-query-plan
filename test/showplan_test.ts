@@ -31,4 +31,15 @@ describe('RelOp', () => {
 
     })
 
+    describe("description()", () => {
+        
+        it("Clustered Index Scan", () => {
+            let xml = `<RelOp xmlns='http://schemas.microsoft.com/sqlserver/2004/07/showplan' PhysicalOp='Clustered Index Scan'>
+                    </RelOp>`;
+            assert.equal("Scanning a clustered index, entirely or only a range.",
+                new showplan.RelOp(parse(xml)).description());
+        })
+
+    })
+
 })
