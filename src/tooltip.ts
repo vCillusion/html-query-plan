@@ -1,4 +1,7 @@
 import { findAncestor } from './utils'
+import { tooltip as buildTooltip } from './newtooltip'
+import { RelOp } from './showplan'
+import { getPlanXml, getNodeXml } from './getxml'
 
 const TOOLTIP_TIMEOUT = 500;
 
@@ -14,7 +17,7 @@ function initTooltip(container: Element) {
     let nodes = container.querySelectorAll('.qp-node');
 
     for (let i = 0; i < nodes.length; i++) {
-        let node = nodes[i];
+        let node = <HTMLElement>nodes[i];
         node.addEventListener("mouseover", () => {
             onMouseover(node);
         });
@@ -36,7 +39,7 @@ function trackMousePosition() {
     }
 }
 
-function onMouseover(node: Element) {
+function onMouseover(node: HTMLElement) {
     if (timeoutId != null) {
         return;
     }
@@ -58,11 +61,12 @@ function onMouseout(node: Element, event: MouseEvent) {
     hideTooltip();
 }
 
-function showTooltip(node: Element) {
+function showTooltip(node: HTMLElement) {
     hideTooltip();
     
     let positionY = cursorY;
-    let tooltip = <HTMLElement>node.querySelector(".qp-tt");
+    let relOp = getNodeXml(node).relOp;
+    let tooltip = buildTooltip(relOp);
 
     // Nudge the tooptip up if its going to appear below the bottom of the page
     let documentHeight = getDocumentHeight();
